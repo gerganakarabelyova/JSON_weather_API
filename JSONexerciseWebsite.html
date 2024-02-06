@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+        <title>Weather forecast JSON</title>
+
+		<script>	
+		function getOutput()
+		{	
+			var location = document.getElementById("location").value;
+			var request = new XMLHttpRequest();
+			var response;
+			var output = document.getElementById("output");
+			
+			request.open('GET', 'http://api.openweathermap.org/data/2.5/weather?units=imperial&appid=e40708acfc349db0617ebc6895797457&q=' + location, false); 
+			request.send(null);
+			
+			if(request.status == 200)
+			{
+                response = JSON.parse(request.responseText);
+                
+                var weatherIcon;
+                
+                var cels = (response.main.temp - 32) * (5 / 9);
+                
+                  if(cels>=20){
+                     weatherIcon="<img src = \"https://static-00.iconduck.com/assets.00/fire-emoji-1606x2048-z6ituxc1.png\" width=\"35\" height=\"35\">";
+                  }
+                  
+                  if(cels<20 && cels>=5){
+                     weatherIcon="<img src = \"https://images.emojiterra.com/twitter/512px/2600.png\"  width=\"35\" height=\"35\">";
+                  }
+                  
+                  if(cels<5){
+                     weatherIcon="<img src = \"https://emojiisland.com/cdn/shop/products/9_large.png?v=1571606116\" width=\"35\" height=\"35\">";
+                  }
+                var temperature = cels.toFixed(1) + " degrees and " + response.weather[0].description;
+				output.innerHTML = "<h3>" + weatherIcon + temperature + "</h3>";
+			}
+			else
+			{
+				output.innerHTML = "failed.";
+			}
+		}
+		
+		function clearOutput()
+		{
+			output.innerHTML = "";
+		}
+		</script>
+	</head>
+	<body>
+    <center>
+		<h1>Using a Web API from OpenWeatherMap.org</h1>
+        <h2>to request a JSON file with the current weather data of a certain city</h2>
+        
+		<div>
+        <br>
+			<label>Location (city, 2-digit-country):
+			</label>
+            <input type="text" id="location" value="London,uk" />
+		</div>
+        
+		<div>
+        <br>
+			<button onclick="getOutput();" class="submit-button">Get Weather</button>
+			<button onclick="clearOutput();">Clear</button>
+		</div>
+        
+		<div id="output"></div>
+        
+        </center>
+        
+        <div>
+        <br>
+			<b>Test examples for the 3 different icons:</b>
+        <br><br>
+        <img src = "https://emojiisland.com/cdn/shop/products/9_large.png?v=1571606116" width="35" height="35">
+        Barrow,usa - always below 0 temperatures
+        <br><br>
+        Reykjavik, is - almost always below 0 temperatures
+        <br><br><br>
+        <img src = "https://images.emojiterra.com/twitter/512px/2600.png" width="35" height="35">
+        Sydney,au - almost always between 5 and 20 degrees C
+        <br><br>
+        Santiago, Chile - almost always between 5 and 20 degrees C
+        <br><br><br>
+        <img src = "https://static-00.iconduck.com/assets.00/fire-emoji-1606x2048-z6ituxc1.png" width="35" height="35">
+        Cairo, Egypt - almost always above 20 degrees C
+        <br><br>
+        Khartoum, Sudan - almost always above 20 degrees C
+		</div>
+        
+	</body>
+</html>
